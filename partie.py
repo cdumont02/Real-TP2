@@ -87,8 +87,20 @@ class Partie:
         """
         assert isinstance(nb_min, int), "Partie: nb_min doit être un entier."
         assert isinstance(nb_max, int), "Partie: nb_max doit être un entier."
+        est_valide = False
+        while est_valide == False:
+            valeur_entree = input("Veuillez entrez un nombre entre {} et {}".format(nb_min, nb_max))
+            if valeur_entree.isnumeric():
+                valeur_entree = int(valeur_entree)
+                if valeur_entree >= nb_min and valeur_entree <= nb_max:
+                    est_valide = True
+                    continue
+                else:
+                    print("Le nombre entré est invalide")
+            else:
+                print("La valeur entrée n'est pas un nombre.  Veuillez entrer un nombre")
+        return  valeur_entree
 
-        pass
 
     def demander_forme_pion(self):
         """
@@ -100,8 +112,17 @@ class Partie:
         Returns:
             string: Le catactère saisi par l'utilisateur après validation.
         """
+        est_valide = False
+        while est_valide == False:
+            choix = input("Veuillez choisir votre type de pion entre X ou O")
+            choix = choix.upper()
+            if (choix == "X" or choix =="O"):
+                est_valide = True
+            else:
+                print("Choix invalide.  Veuilles choisir enrtre X ou O")
+                continue
+        return choix
 
-        pass
 
     def tour(self, choix):
         """
@@ -139,12 +160,24 @@ class Partie:
             (int,int):  Une paire d'entiers représentant les
                         coordonnées (ligne, colonne) de la case choisie.
         """
-
-        pass
+        est_vide = False
+        while est_vide == False:
+            print("Veuillez entrer le numéro de la ligne")
+            premiere_coordonne = self.saisir_nombre(0,2)
+            print("Veuillez entrer le numéro de la colonne.")
+            deuxieme_coordone = self.saisir_nombre(0,2)
+            if (self.plateau.position_valide(premiere_coordonne, deuxieme_coordone)):
+                coord = (premiere_coordonne, deuxieme_coordone)
+                est_vide = True
+            else:
+                print("La case est occupée, veuillez entre une nouvelle coordonée")
+                continue
+        return coord
 
 if __name__ == "__main__":
     # Point d'entrée du programme.
     # On initialise une nouvelle partie, et on appelle la méthode jouer().
     partie = Partie()
-    partie.jouer()
+    #partie.jouer()
+    partie.demander_postion()
 

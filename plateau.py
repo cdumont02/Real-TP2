@@ -86,8 +86,6 @@ class Plateau:
             for j in range(0,3):
                 if self.cases[i,j].est_vide():
                     return True
-                else:
-                    break
         return False
 
     def position_valide(self, ligne, colonne):
@@ -150,9 +148,7 @@ class Plateau:
                        (self.cases[0,i].contenu == pion and self.cases[1,i].contenu == pion and self.cases[2,i].contenu == pion)
             if victoire == True:
                 return victoire
-                break
-            else:
-                continue
+
         victoire = True
         i=0
         while i<=2:

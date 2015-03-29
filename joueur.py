@@ -31,16 +31,22 @@ class Joueur:
         assert pion in ["O", "X"], "Joueur: pion doit être 'O' ou 'X'."
 
 
-        self.type = type    # Type du joueur ("Personne" ou "Ordinateur").
-        self.numero = numero
-        self.nom = nom     # Nom du joueur.
-        self.pion = pion    # Forme du pion affecté au joueur.
+        self.type = type            # Type du joueur ("Personne" ou "Ordinateur").
+        self.numero = numero        # Numéro du joueur.  Est-il joueur 1 ou 2.  Ajout personel par fantasie.
+        self.nom = nom              # Nom du joueur.
+        self.pion = pion            # Forme du pion affecté au joueur.
         self.nb_parties_gagnees = 0 # Nombre de parties gagnées par le joueur.
 
         self.entrer_nom_joueur()
 
 
     def entrer_nom_joueur(self):
+        """
+        Cette méthode permet d'entrer le nom du joueur s'il s'agit d'une personne.
+        Je trouvais plus intéressant, que la classe est elle même une manière d'entrer le nom du joueur.
+        :return:
+            Rien
+        """
         if self.type == "PERSONNE":
             print("Entrer le nom du joueur : ", self.numero)
             self.nom = input()

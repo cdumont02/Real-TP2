@@ -18,7 +18,7 @@ class Case:
         un nouvel objet. Elle peut prendre des paramètres supplémentaires (ici "contenu").
         Le mot clé "self" permet de stocker des informations dans l'instance de l'objet.
         Chaque instance a son propre espace mémoire et peut donc contenir des valeurs
-        différentes dans ses variables membres. #3
+        différentes dans ses variables membres. #4
 
         Args:
             contenu (string): le contenu de la case (" ", "O" ou "X")

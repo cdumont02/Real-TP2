@@ -80,10 +80,7 @@ class Partie:
         #Si l'utilisateur a entré 0 comme choix, est-terminee == True donc la partie est automatiquement terminée.
         while self.est_terminee == False:
 
-            #Deuxième loop pour savoir si le match est terminé.
-            #while self.plateau.non_plein()==False or self.plateau.est_gagnant("X")==False or self.plateau.est_gagnant("O"):
-
-            #    """Code pour executer les tours jusqu'à ce que le match soit gagné ou nulle."""
+            #On execute les tours jusqu'à ce que le match soit complet.
             self.tour(choix)
 
             #On affichie les statisqiques de la partie
@@ -115,6 +112,7 @@ class Partie:
         """
         assert isinstance(nb_min, int), "Partie: nb_min doit être un entier."
         assert isinstance(nb_max, int), "Partie: nb_max doit être un entier."
+
         est_valide = False
         while est_valide == False:
             valeur_entree = input("Veuillez entrer un nombre entre {} et {}".format(nb_min, nb_max))
@@ -142,7 +140,7 @@ class Partie:
         """
         est_choix_valide = False
         while est_choix_valide == False:
-            choix = input("Veuillez choisir votre type de pion entre X ou O")
+            choix = input("Veuillez choisir le pion pour le premier joueur entre X ou O")
             choix = choix.upper()
             if (choix == "X" or choix =="O"):
                 est_choix_valide = True
@@ -176,7 +174,7 @@ class Partie:
 
         def determiner_joueur_actif(tour, liste_joueurs):
             """
-            Fonction déterminant qui est le joueur actif dans un liste en fonction du tour.  Un tour pair équivaut nécessairement au
+            Fonction déterminant qui est le joueur actif dans une liste en fonction du tour.  Un tour pair équivaut nécessairement au
             tour du joueur numéro 2
 
             Args:
@@ -192,6 +190,14 @@ class Partie:
                 self.joueur_courant=liste_joueurs[0]
 
         def executer_action_joueur():
+            """
+            Cette Fonction permet d'executer le tour d'un joueur de type Personne soit demander la position souhaitée, la valider et la sélectionner.
+
+            Args:
+                Rien
+            Returns:
+                Rien
+            """
             coord = self.demander_postion()
             while(self.plateau.position_valide(coord[0], coord[1])==False):
                 print("La case est déjà occupée.  Veuillez choisir une autre case.")
@@ -199,32 +205,18 @@ class Partie:
             self.plateau.selectionner_case(coord[0], coord[1], self.joueur_courant.pion)
 
         def executer_action_ordinateur(pion):
+            """
+            Cette Fonctione permet d'exécuter la tour d'un joureur de type Ordinateur.
+            Args:
+                Rien
+            Returns:
+                Rien
+            """
             self.plateau.choisir_prochaine_case(pion)
 
 
-        if choix == 2:
-            tour = 0
-            self.plateau.initialiser()
-            while self.plateau.non_plein():
-                tour += 1
-                determiner_joueur_actif(tour, self.joueurs)
-                print(self.plateau)
-                print("C'est maintenant le tour de : ", self.joueur_courant.nom)
-                executer_action_joueur()
-                if(self.plateau.est_gagnant(self.joueur_courant.pion)):
-                    self.est_terminee = True
-                    self.joueur_gagnant = self.joueur_courant.nom
-                    self.joueur_courant.nb_parties_gagnees += 1
-                    print(self.plateau)
-                    break
-            if(self.plateau.non_plein() == False):
-                est_terminee = True
-                self.nb_parties_nulles += 1
-                print(self.plateau)
-                self.joueur_gagnant = "Partie Nulle"
-                print("***Partie Nulle***")
-
-        elif choix  == 1:
+        #SI le joueur a choisi 1 au menu principal les tours se déroulent de cette façon.
+        if choix  == 1:
             tour = 0
             self.plateau.initialiser()
             while self.plateau.non_plein():
@@ -248,8 +240,31 @@ class Partie:
                 print(self.plateau)
                 self.joueur_gagnant = "Partie Nulle"
                 print("***Partie Nulle***")
+
+        #Sinon si le joueur a choisi 2 dans le menu principal, le tours s'exécutent de cette façon.
+        elif choix == 2:
+            tour = 0
+            self.plateau.initialiser()
+            while self.plateau.non_plein():
+                tour += 1
+                determiner_joueur_actif(tour, self.joueurs)
+                print(self.plateau)
+                print("C'est maintenant le tour de : ", self.joueur_courant.nom)
+                executer_action_joueur()
+                if(self.plateau.est_gagnant(self.joueur_courant.pion)):
+                    self.est_terminee = True
+                    self.joueur_gagnant = self.joueur_courant.nom
+                    self.joueur_courant.nb_parties_gagnees += 1
+                    print(self.plateau)
+                    break
+            if(self.plateau.non_plein() == False):
+                est_terminee = True
+                self.nb_parties_nulles += 1
+                print(self.plateau)
+                self.joueur_gagnant = "Partie Nulle"
+                print("***Partie Nulle***")
         else:
-            assert "Choix Invalide est passé en paramètre."
+            assert "Choix Invalide est passé en paramètre du tour"
 
     def demander_postion(self):
         """
@@ -317,6 +332,12 @@ class Partie:
                 print("Veuillez entrer un choix valide")
 
     def initialiser_partie(self, choix):
+        """
+        Cette Méthode permet d'unitialise la partie.  Elle ajoute les joueurs dans la liste et assigne les pions selon le cjoix de l'utilisateur.
+        :param choix (int): choix du menu principal.  Dépend si le joueur a chasi de jouer cntre un ordinateur ou contre une autre personne.
+        :return:
+            Rien
+        """
         def append_joueurs(joueur1, joueur2):
             self.joueurs.append(joueur1)
             self.joueurs.append(joueur2)

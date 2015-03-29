@@ -14,7 +14,7 @@ class Joueur:
         nb_parties_gagnees (int): Le nombre de parties gagnées par le joueur.
     """
 
-    def __init__(self, nom, type, pion):
+    def __init__(self, type, pion, nom="Colosse"):
         """
         Méthode spéciale initialisant un nouveau joueur.
         Args:
@@ -25,11 +25,15 @@ class Joueur:
 
         assert isinstance(nom, str), "Joeur: nom doit être une chaîne de caractères."
         assert isinstance(type, str), "Joeur: type doit être une chaîne de caractères."
-        assert type in ["Personne", "Ordinateur"], "Joueur: type doit être 'Personne' ou 'Ordinateur'."
+        assert type in ["PERSONNE", "ORDINATEUR"], "Joueur: type doit être 'Personne' ou 'Ordinateur'."
         assert isinstance(pion, str), "Joueur: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Joueur: pion doit être 'O' ou 'X'."
 
-        self.nom = nom      # Nom du joueur.
-        self.type = type    # Type du joueur ("Personne" ou "Ordinateur").
+        self.nom = self.entrer_nom_joueur()      # Nom du joueur.
+        self.type = type.upper()    # Type du joueur ("Personne" ou "Ordinateur").
         self.pion = pion    # Forme du pion affecté au joueur.
         self.nb_parties_gagnees = 0 # Nombre de parties gagnées par le joueur.
+
+    def entrer_nom_joueur(self):
+        if self.type == "PERSONNE":
+            self.nom = input("Entrer le nom du joueur")

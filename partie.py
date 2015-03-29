@@ -30,6 +30,7 @@ class Partie:
         self.nb_parties_nulles = 0  # Le nombre de parties nulles (aucun joueur n'a gagné).
         self.est_terminee = False
         self.joueur_gagnant = ""
+        self.pion_non_choisi = ""
 
     def jouer(self):
         """
@@ -68,7 +69,13 @@ class Partie:
         Si l'utilisateur ne veut plus recommencer, il faut afficher ce message:
         ***Merci et au revoir !***
         """
-        self.afficher_menu_principal()
+
+        #On prend le choix de l'utilisateur dans le menu principal
+        choix = self.menu_principal()
+
+        #On initialise la partie selon le choix de l'utilisateur dans le menu principal
+        self.initialiser_partie(choix)
+
         #Prermière loop pour savoir si la partie est terminée.
         while self.est_terminee == False:
 
@@ -84,6 +91,9 @@ class Partie:
             #On détermine si la partie est terminée en inversant le choix de recommencer nouveau match.
             #Si on recommence un nouveau match, la partie n'est donc pas terminée.
             self.est_terminee = not(self.recommencer_nouveau_match())
+
+        #On Termine la partie
+        self.terminer_partie()
 
 
     def saisir_nombre(self, nb_min, nb_max):
@@ -106,7 +116,7 @@ class Partie:
         assert isinstance(nb_max, int), "Partie: nb_max doit être un entier."
         est_valide = False
         while est_valide == False:
-            valeur_entree = input("Veuillez entrez un nombre entre {} et {}".format(nb_min, nb_max))
+            valeur_entree = input("Veuillez entrer un nombre entre {} et {}".format(nb_min, nb_max))
             if valeur_entree.isnumeric():
                 valeur_entree = int(valeur_entree)
                 if valeur_entree >= nb_min and valeur_entree <= nb_max:
@@ -129,15 +139,19 @@ class Partie:
         Returns:
             string: Le catactère saisi par l'utilisateur après validation.
         """
-        est_valide = False
-        while est_valide == False:
+        est_choix_valide = False
+        while est_choix_valide == False:
             choix = input("Veuillez choisir votre type de pion entre X ou O")
             choix = choix.upper()
             if (choix == "X" or choix =="O"):
-                est_valide = True
+                est_choix_valide = True
             else:
                 print("Choix invalide.  Veuilles choisir enrtre X ou O")
                 continue
+        if choix == "X":
+            self.pion_non_choisi == "O"
+        else:
+            self.pion_non_choisi =="X"
         return choix
 
 
@@ -191,17 +205,28 @@ class Partie:
                 continue
         return coord
 
-    def afficher_menu_principal(self):
+    def menu_principal(self):
+        """
+        Cette méthode affiche le menu principal du jeu.  Elle retourne le choix de l'utilisateur.
+
+        :return:
+            int choix qui varie entre 0 et 2
+        """
 
         print("Bienvenue au jeu Tic Tac Toe.")
         print("---------------Menu---------------")
         print("1- Jouer avec l'ordinateur.\n2- Jouter avec une autre personne.\n0- Quitter.")
         print("----------------------------------")
-        print("Entrez s.v.p. un nombre entre 0 et 2:?")
-        choix = partie.saisir_nombre(0,2)
+        choix = self.saisir_nombre(0,2)
         return choix
 
     def recommencer_nouveau_match(self):
+        """
+        Cette méthode demande à l'utilisateur s'il veur faire un nouveau match.
+
+        :return:
+            rien
+        """
         est_choix_valide = False
         print("Voulez vous recommencer? (O, N)")
         while est_choix_valide==False:
@@ -210,27 +235,46 @@ class Partie:
                 return True
                 est_choix_valide == True
             elif choix == "N":
-                print("***Merci et au revoir !***")
                 return False
                 est_choix_valide == True
             else:
                 print("Veuillez entrer un choix valide")
 
-    def initialiser_joueurs(self, choix):
-        pass
-        #if choix == 1:
-            #joueur1 = joueur()
-            #self.joueurs.append(joueur1)
+    def initialiser_partie(self, choix):
+        if choix == 1:
+            self.joueurs.append(joueur1 = Joueur("Personne", pion_choisi = self.demander_forme_pion()))
+            self.joueurs.append(joueur2 = Joueur("Personne", self.pion_non_choisi))
+        elif choix == 2:
+            self.joueurs.append(joueur1 = Joueur("Personne", pion_choisi = self.demander_forme_pion()))
+            self.joueurs.append(joueur2 = Joueur("Ordinateur", self.pion_non_choisi))
+        elif choix == 0:
+            self.est_terminee == True
+
 
     def afficher_statistiques(self):
-        print("Le match est terminé. Le joueur gagnant est: ", partie.joueur_gagnant)
+        """
+        Cette méthode afficher les statistiques de la partie en cours
+
+        :return:
+            rien
+        """
+        print("Le match est terminé. Le joueur gagnant est: ", self.joueur_gagnant)
         for joueur in self.joueurs:
             print("Nombre de parties gagnées par ", joueur.nom, " : ",joueur.nb_parties_gagnees )
         print("Nombres de parties nulles : ", self.nb_parties_nulles)
+
+    def terminer_partie(self):
+        """
+        Cette méthode exécute le code lorsque la partie est considérée comme terminée.
+
+        :return:
+            Rien
+        """
+        print("***Merci et au revoir !***  ")
+
 
 if __name__ == "__main__":
     # Point d'entrée du programme.
     # On initialise une nouvelle partie, et on appelle la méthode jouer().
     partie = Partie()
     partie.jouer()
-

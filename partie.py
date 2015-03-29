@@ -1,8 +1,7 @@
 __authors__ = 'Carl Dumont et Simon Provencher'
 __date__ = "31 mars 2015"
 
-"""Ce fichier permet de...(complétez la description de ce que
-ce fichier est supposé faire ! """
+"""Ce fichier permet d'exécuter une partie du jeu tic-tac-toe."""
 
 from plateau import Plateau
 from joueur import Joueur
@@ -13,7 +12,13 @@ class Partie:
     un plateau et deux joueurs (deux personnes ou une personne et un ordinateur).
 
     Attributes:
-        À completer !.
+        plateau             (obj Plateau)       : Représente le plateau sur lequel la partie se déroule.
+        joueurs             (liste obj Joueur)  : Représente les joueurs qui vont joueur la partie. Ils sont soit des personnes ou un ordinateur.
+        joueur_courant      (obj Joueur)        : Contient le joueur qui est en train d'exécuter son tour
+        nb_partie_nulles    (int)               : Nombre de parties qu'aucun de joueur n'a gagné.
+        est_terminée        (bool)              : Est vrai si les condition de fin de partie sont rencontrées.  False autrement.
+        joueur_gagnant      (str)               : Contient le nom du joueur gagnant.
+        pion_non_choisi     (str)               : Contient la valeur du pion qui n'a pas été choisi par l'utilisateur.
 
     """
 
@@ -22,8 +27,8 @@ class Partie:
         Méthode spéciale initialisant une nouvelle partie du jeu Tic-Tac-Toe.
         """
         self.plateau = Plateau()    # Le plateau du jeu contenant les 9 cases.
-        self.joueurs = []       # La liste des deux joueurs (initialement une liste vide).
-                                # Au début du jeu, il faut ajouter les deux joueurs à cette liste.
+        self.joueurs = []           # La liste des deux joueurs (initialement une liste vide).
+                                    # Au début du jeu, il faut ajouter les deux joueurs à cette liste.
         self.joueur_courant = None  # Le joueur courant (initialisé à une valeur nulle: None)
                                     # Pendant le jeu et à chaque tour d'un joueur,
                                     # il faut affecter à cet attribut ce joueur courant.
@@ -113,13 +118,13 @@ class Partie:
         assert isinstance(nb_min, int), "Partie: nb_min doit être un entier."
         assert isinstance(nb_max, int), "Partie: nb_max doit être un entier."
 
-        est_valide = False
-        while est_valide == False:
+        est_valeur_valide = False
+        while est_valeur_valide == False:
             valeur_entree = input("Veuillez entrer un nombre entre {} et {}".format(nb_min, nb_max))
             if valeur_entree.isnumeric():
                 valeur_entree = int(valeur_entree)
                 if valeur_entree >= nb_min and valeur_entree <= nb_max:
-                    est_valide = True
+                    est_valeur_valide = True
                     continue
                 else:
                     print("Le nombre entré est invalide")

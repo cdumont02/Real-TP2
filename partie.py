@@ -5,7 +5,7 @@ __date__ = "31 mars 2015"
 ce fichier est supposé faire ! """
 
 from plateau import Plateau
-from joueur import*
+from joueur import Joueur
 
 class Partie:
     """
@@ -77,13 +77,14 @@ class Partie:
         self.initialiser_partie(choix)
 
         #Prermière loop pour savoir si la partie est terminée.
+        #Si l'utilisateur a entré 0 comme choix, est-terminee == True donc la partie est automatiquement terminée.
         while self.est_terminee == False:
 
             #Deuxième loop pour savoir si le match est terminé.
-            while self.plateau.non_plein()==False or self.plateau.est_gagnant()==False:
+            #while self.plateau.non_plein()==False or self.plateau.est_gagnant("X")==False or self.plateau.est_gagnant("O"):
 
-                """Code pour executer les tours jusqu'à ce que le match soit gagné ou nulle."""
-                #self.tour(1)
+            #    """Code pour executer les tours jusqu'à ce que le match soit gagné ou nulle."""
+            self.tour(choix)
 
             #On affichie les statisqiques de la partie
             self.afficher_statistiques()
@@ -149,9 +150,9 @@ class Partie:
                 print("Choix invalide.  Veuilles choisir enrtre X ou O")
                 continue
         if choix == "X":
-            self.pion_non_choisi == "O"
+            self.pion_non_choisi = "O"
         else:
-            self.pion_non_choisi =="X"
+            self.pion_non_choisi ="X"
         return choix
 
 
@@ -173,7 +174,82 @@ class Partie:
         assert isinstance(choix, int), "Partie: choix doit être un entier."
         assert choix in [1, 2], "Partie: choix doit être 1 ou 2."
 
-        pass
+        def determiner_joueur_actif(tour, liste_joueurs):
+            """
+            Fonction déterminant qui est le joueur actif dans un liste en fonction du tour.  Un tour pair équivaut nécessairement au
+            tour du joueur numéro 2
+
+            Args:
+                tour (int) : Un entier représentant le tour actif
+                joueurs (liste d'objets Joueurs) : Liste contenant les joueurs de la partie.
+
+             Returns:
+                Rien
+            """
+            if tour%2==0:
+                self.joueur_courant=liste_joueurs[1]
+            else:
+                self.joueur_courant=liste_joueurs[0]
+
+        def executer_action_joueur():
+            coord = self.demander_postion()
+            while(self.plateau.position_valide(coord[0], coord[1])==False):
+                print("La case est déjà occupée.  Veuillez choisir une autre case.")
+                coord = self.demander_postion()
+            self.plateau.selectionner_case(coord[0], coord[1], self.joueur_courant.pion)
+
+        def executer_action_ordinateur(pion):
+            self.plateau.choisir_prochaine_case(pion)
+
+
+        if choix == 2:
+            tour = 0
+            self.plateau.initialiser()
+            while self.plateau.non_plein():
+                tour += 1
+                determiner_joueur_actif(tour, self.joueurs)
+                print(self.plateau)
+                print("C'est maintenant le tour de : ", self.joueur_courant.nom)
+                executer_action_joueur()
+                if(self.plateau.est_gagnant(self.joueur_courant.pion)):
+                    self.est_terminee = True
+                    self.joueur_gagnant = self.joueur_courant.nom
+                    self.joueur_courant.nb_parties_gagnees += 1
+                    print(self.plateau)
+                    break
+            if(self.plateau.non_plein() == False):
+                est_terminee = True
+                self.nb_parties_nulles += 1
+                print(self.plateau)
+                self.joueur_gagnant = "Partie Nulle"
+                print("***Partie Nulle***")
+
+        elif choix  == 1:
+            tour = 0
+            self.plateau.initialiser()
+            while self.plateau.non_plein():
+                tour += 1
+                determiner_joueur_actif(tour, self.joueurs)
+                print(self.plateau)
+                print("C'est maintenant le tour de : ", self.joueur_courant.nom)
+                if(self.joueur_courant.type == "PERSONNE"):
+                    executer_action_joueur()
+                else:
+                    executer_action_ordinateur(self.joueur_courant.pion)
+                if(self.plateau.est_gagnant(self.joueur_courant.pion)):
+                    self.est_terminee = True
+                    self.joueur_gagnant = self.joueur_courant.nom
+                    self.joueur_courant.nb_parties_gagnees += 1
+                    print(self.plateau)
+                    break
+            if(self.plateau.non_plein() == False):
+                est_terminee = True
+                self.nb_parties_nulles += 1
+                print(self.plateau)
+                self.joueur_gagnant = "Partie Nulle"
+                print("***Partie Nulle***")
+        else:
+            assert "Choix Invalide est passé en paramètre."
 
     def demander_postion(self):
         """
@@ -241,14 +317,24 @@ class Partie:
                 print("Veuillez entrer un choix valide")
 
     def initialiser_partie(self, choix):
+        def append_joueurs(joueur1, joueur2):
+            self.joueurs.append(joueur1)
+            self.joueurs.append(joueur2)
+
         if choix == 1:
-            self.joueurs.append(joueur1 = Joueur("Personne", pion_choisi = self.demander_forme_pion()))
-            self.joueurs.append(joueur2 = Joueur("Personne", self.pion_non_choisi))
+            joueur1 = Joueur("PERSONNE", self.demander_forme_pion())
+            joueur2 = Joueur("ORDINATEUR", self.pion_non_choisi)
+            append_joueurs(joueur1, joueur2)
+
         elif choix == 2:
-            self.joueurs.append(joueur1 = Joueur("Personne", pion_choisi = self.demander_forme_pion()))
-            self.joueurs.append(joueur2 = Joueur("Ordinateur", self.pion_non_choisi))
+            joueur1 = Joueur("PERSONNE", self.demander_forme_pion(),"1")
+            joueur2 = Joueur("PERSONNE", self.pion_non_choisi, "2")
+            append_joueurs(joueur1, joueur2)
+
         elif choix == 0:
-            self.est_terminee == True
+            self.est_terminee = True
+
+
 
 
     def afficher_statistiques(self):

@@ -84,8 +84,10 @@ class Plateau:
         """
         for i in range(0,3):
             for j in range(0,3):
-                if self.cases[i,j].est_vide:
+                if self.cases[i,j].est_vide():
                     return True
+                else:
+                    break
         return False
 
     def position_valide(self, ligne, colonne):
@@ -104,7 +106,7 @@ class Plateau:
         assert isinstance(ligne, int), "Plateau: ligne doit être un entier."
         assert isinstance(colonne, int), "Plateau: colonne doit être un entier."
 
-        return self.cases[ligne, colonne].est_vide
+        return self.cases[ligne, colonne].est_vide()
 
 
     def selectionner_case(self, ligne, colonne, pion):
@@ -125,7 +127,7 @@ class Plateau:
         assert ligne in [0, 1, 2], "Plateau: ligne doit être 0, 1 ou 2."
         assert colonne in [0, 1, 2], "Plateau: colonne doit être 0, 1 ou 2."
 
-        self.cases[ligne, colonne] = pion
+        self.cases[ligne, colonne].contenu = pion
 
 
     def est_gagnant(self, pion):
@@ -142,22 +144,26 @@ class Plateau:
 
         assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
+        debug_var = self.cases[0,0].contenu == pion
         for i in range (0,3):
-            victoire = (self.cases[i,0] and self.cases[i,1] and self.cases[i,2] == pion) or \
-                       (self.cases[0,i] and self.cases[1,i] and self.cases[2,i] == pion)
+            victoire = (self.cases[i,0].contenu == pion and self.cases[i,1].contenu == pion and self.cases[i,2].contenu == pion) or \
+                       (self.cases[0,i].contenu == pion and self.cases[1,i].contenu == pion and self.cases[2,i].contenu == pion)
             if victoire == True:
                 return victoire
+                break
+            else:
+                continue
         victoire = True
         i=0
         while i<=2:
-            if self.cases[i,i] != pion:
+            if self.cases[i,i].contenu != pion:
                 victoire = False
             i +=1
         if victoire == True:
             return victoire
         i = 2
         while i >= 0:
-            if self.cases[i,i] != pion:
+            if self.cases[i,i].contenu != pion:
                 victoire = False
             i -=1
         if victoire == True:

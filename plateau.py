@@ -62,7 +62,17 @@ class Plateau:
             string: Retourne la chaîne de caractères à afficher.
         """
 
-        pass
+        s= " +-0-+-1-+-2-+ \n"
+        for i in range(0,3):
+            s += str(i) + "| "
+            for j in range(0,3):
+                s += self.cases[i,j].contenu +" | "
+            s += " \n"
+            s += " +---+---+---+ \n"
+        return s
+
+
+
 
     def non_plein(self):
         """
@@ -72,8 +82,11 @@ class Plateau:
         Returns:
             bool: True si le plateau n'est pas plein, False autrement.
         """
-
-        pass
+        for i in range(0,3):
+            for j in range(0,3):
+                if self.cases[i,j].est_vide:
+                    return True
+        return False
 
     def position_valide(self, ligne, colonne):
         """
@@ -91,7 +104,8 @@ class Plateau:
         assert isinstance(ligne, int), "Plateau: ligne doit être un entier."
         assert isinstance(colonne, int), "Plateau: colonne doit être un entier."
 
-        pass
+        return self.cases[ligne, colonne].est_vide
+
 
     def selectionner_case(self, ligne, colonne, pion):
         """
@@ -108,8 +122,10 @@ class Plateau:
         assert isinstance(colonne, int), "Plateau: colonne doit être un entier."
         assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
+        assert ligne in [0, 1, 2], "Plateau: ligne doit être 0, 1 ou 2."
+        assert colonne in [0, 1, 2], "Plateau: colonne doit être 0, 1 ou 2."
 
-        pass
+        self.cases[ligne, colonne] = pion
 
 
     def est_gagnant(self, pion):
@@ -127,7 +143,7 @@ class Plateau:
         assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
 
-        pass
+
 
     def choisir_prochaine_case(self, pion):
         """
@@ -153,3 +169,7 @@ class Plateau:
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
 
         pass
+
+if __name__ == "__main__":
+    p1= Plateau()
+    print(p1)

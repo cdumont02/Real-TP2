@@ -1,8 +1,8 @@
 __authors__ = 'Ajoutez les noms des membres de votre équipe!'
 __date__ = "Ajoutez la date de remise"
 
-"""Ce fichier permet de...(complétez la description de ce que
-ce fichier est supposé faire ! """
+"""Ce fichier permet d'afficher un plateau de tictactoe, d'initialiser les positions des pièces et de modifier le plateau
+selon les commandes envoyées par les joueurs dans la partie! Il gère aussi l'intelligence artificielle de l'ordinateur"""
 
 from case import Case
 from random import randrange
@@ -142,6 +142,34 @@ class Plateau:
 
         assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
+        for i in range (0,3):
+            victoire = (self.cases[i,0] and self.cases[i,1] and self.cases[i,2] == pion) or \
+                       (self.cases[0,i] and self.cases[1,i] and self.cases[2,i] == pion)
+            if victoire == True:
+                return victoire
+        victoire = True
+        i=0
+        while i<=2:
+            if self.cases[i,i] != pion:
+                victoire = False
+            i +=1
+        if victoire == True:
+            return victoire
+        i = 2
+        while i >= 0:
+            if self.cases[i,i] != pion:
+                victoire = False
+            i -=1
+        if victoire == True:
+            return victoire
+
+        return False
+
+
+
+
+
+
 
 
 
@@ -168,8 +196,57 @@ class Plateau:
         assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
 
-        pass
+        if pion == "X":
+            pion_ordi="O"
+        else:
+            pion_ordi="X"
+        self.completer_trios(pion_ordi)
+        self.completer_trios(pion)
+        valide = False
+        while not valide:
+            a = randrange(0,2)
+            b = randrange(0,2)
+            valide = self.position_valide(a,b)
+        return(a,b)
 
-if __name__ == "__main__":
-    p1= Plateau()
-    print(p1)
+
+
+    def completer_trios(self,pion):
+        assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
+        assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
+
+        for i in range(0,3):
+             if self.cases[i,0] and self.cases[i,1] == pion:
+                return (i,2)
+             if self.cases[i,1] and self.cases[i,2] == pion:
+                return (i,0)
+             if self.cases[i,0] and self.cases[i,2] == pion:
+                return (i,1)
+             if self.cases[0,i] and self.cases[1,i] == pion:
+                return (2,i)
+             if self.cases[1,i] and self.cases[2,i] == pion:
+                return (0,i)
+             if self.cases[0,i] and self.cases[2,i] == pion:
+                return (1,i)
+        if self.cases[1,1] == pion:
+            if self.cases[0,0] == pion:
+                return (2,2)
+            if self.cases[0,2] == pion:
+                return  (2,0)
+            if self.cases[2,2] == pion:
+                return (0,0)
+            if self.cases[2,0] == pion:
+                return  (0,2)
+        else:
+            if (self.cases[0,0] and self.cases[2,2]) or (self.cases[0,2] and self.cases[2,0]) == pion:
+                return (1,1)
+        valide = False
+        while not valide:
+            a = randrange(0,2)
+            b = randrange(0,2)
+            valide = self.position_valide(a,b)
+        return(a,b)
+
+
+
+

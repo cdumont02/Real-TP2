@@ -1,11 +1,11 @@
-__authors__ = 'Ajoutez les noms des membres de votre équipe!'
-__date__ = "Ajoutez la date de remise"
+__authors__ = 'Carl Dumont et Simon Provencher'
+__date__ = "31 mars 2015"
 
 """Ce fichier permet de...(complétez la description de ce que
 ce fichier est supposé faire ! """
 
 from plateau import Plateau
-from joueur import Joueur
+from joueur import*
 
 class Partie:
     """
@@ -28,6 +28,8 @@ class Partie:
                                     # Pendant le jeu et à chaque tour d'un joueur,
                                     # il faut affecter à cet attribut ce joueur courant.
         self.nb_parties_nulles = 0  # Le nombre de parties nulles (aucun joueur n'a gagné).
+        self.est_terminee = False
+        self.joueur_gagnant = ""
 
     def jouer(self):
         """
@@ -66,8 +68,23 @@ class Partie:
         Si l'utilisateur ne veut plus recommencer, il faut afficher ce message:
         ***Merci et au revoir !***
         """
+        self.afficher_menu_principal()
+        #Prermière loop pour savoir si la partie est terminée.
+        while self.est_terminee == False:
 
-        pass
+            #Deuxième loop pour savoir si le match est terminé.
+            while self.plateau.non_plein()==False or self.plateau.est_gagnant()==False:
+
+                """Code pour executer les tours jusqu'à ce que le match soit gagné ou nulle."""
+                #self.tour(1)
+
+            #On affichie les statisqiques de la partie
+            self.afficher_statistiques()
+
+            #On détermine si la partie est terminée en inversant le choix de recommencer nouveau match.
+            #Si on recommence un nouveau match, la partie n'est donc pas terminée.
+            self.est_terminee = not(self.recommencer_nouveau_match())
+
 
     def saisir_nombre(self, nb_min, nb_max):
         """
@@ -160,24 +177,60 @@ class Partie:
             (int,int):  Une paire d'entiers représentant les
                         coordonnées (ligne, colonne) de la case choisie.
         """
-        est_vide = False
-        while est_vide == False:
+        est_choix_valide = False
+        while est_choix_valide == False:
             print("Veuillez entrer le numéro de la ligne")
             premiere_coordonne = self.saisir_nombre(0,2)
             print("Veuillez entrer le numéro de la colonne.")
             deuxieme_coordone = self.saisir_nombre(0,2)
             if (self.plateau.position_valide(premiere_coordonne, deuxieme_coordone)):
                 coord = (premiere_coordonne, deuxieme_coordone)
-                est_vide = True
+                est_choix_valide = True
             else:
                 print("La case est occupée, veuillez entre une nouvelle coordonée")
                 continue
         return coord
 
+    def afficher_menu_principal(self):
+
+        print("Bienvenue au jeu Tic Tac Toe.")
+        print("---------------Menu---------------")
+        print("1- Jouer avec l'ordinateur.\n2- Jouter avec une autre personne.\n0- Quitter.")
+        print("----------------------------------")
+        print("Entrez s.v.p. un nombre entre 0 et 2:?")
+        choix = partie.saisir_nombre(0,2)
+        return choix
+
+    def recommencer_nouveau_match(self):
+        est_choix_valide = False
+        print("Voulez vous recommencer? (O, N)")
+        while est_choix_valide==False:
+            choix = str(input().upper())
+            if choix == "O":
+                return True
+                est_choix_valide == True
+            elif choix == "N":
+                print("***Merci et au revoir !***")
+                return False
+                est_choix_valide == True
+            else:
+                print("Veuillez entrer un choix valide")
+
+    def initialiser_joueurs(self, choix):
+        pass
+        #if choix == 1:
+            #joueur1 = joueur()
+            #self.joueurs.append(joueur1)
+
+    def afficher_statistiques(self):
+        print("Le match est terminé. Le joueur gagnant est: ", partie.joueur_gagnant)
+        for joueur in self.joueurs:
+            print("Nombre de parties gagnées par ", joueur.nom, " : ",joueur.nb_parties_gagnees )
+        print("Nombres de parties nulles : ", self.nb_parties_nulles)
+
 if __name__ == "__main__":
     # Point d'entrée du programme.
     # On initialise une nouvelle partie, et on appelle la méthode jouer().
     partie = Partie()
-    #partie.jouer()
-    partie.demander_postion()
+    partie.jouer()
 

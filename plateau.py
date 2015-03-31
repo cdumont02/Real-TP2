@@ -1,7 +1,7 @@
-__authors__ = 'Ajoutez les noms des membres de votre équipe!'
-__date__ = "Ajoutez la date de remise"
+__authors__ = 'Carl Dumont et Simon Provencher!'
+__date__ = "31 avril 2015"
 
-"""Ce fichier permet d'afficher un plateau de tictactoe, d'initialiser les positions des pièces et de modifier le plateau
+"""Ce fichier permet d'afficher un plateau de tic-tac-toe, d'initialiser les positions des pièces et de modifier le plateau
 selon les commandes envoyées par les joueurs dans la partie! Il gère aussi l'intelligence artificielle de l'ordinateur"""
 
 from case import Case
@@ -12,7 +12,10 @@ class Plateau:
     Classe modélisant le plateau du jeu Tic-Tac-Toe.
 
     Attributes:
-        À completer !.
+        cases           (dict)      : Dictionnaire des cases et de leur contenu
+        chaîne_plateau  (str)       : Contient la chaîne affichant le plateau de jeu
+    À continuer!
+
 
     """
 
@@ -62,14 +65,14 @@ class Plateau:
             string: Retourne la chaîne de caractères à afficher.
         """
 
-        s= " +-0-+-1-+-2-+ \n"
+        chaîne_plateau= " +-0-+-1-+-2-+ \n"
         for i in range(0,3):
-            s += str(i) + "| "
+            chaîne_plateau += str(i) + "| "
             for j in range(0,3):
-                s += self.cases[i,j].contenu +" | "
-            s += " \n"
-            s += " +---+---+---+ \n"
-        return s
+                chaîne_plateau += self.cases[i,j].contenu +" | "
+            chaîne_plateau += " \n"
+            chaîne_plateau += " +---+---+---+ \n"
+        return chaîne_plateau
 
 
 
@@ -142,7 +145,6 @@ class Plateau:
 
         assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
-        debug_var = self.cases[0,0].contenu == pion
         for i in range (0,3):
             victoire = (self.cases[i,0].contenu == pion and self.cases[i,1].contenu == pion and self.cases[i,2].contenu == pion) or \
                        (self.cases[0,i].contenu == pion and self.cases[1,i].contenu == pion and self.cases[2,i].contenu == pion)
@@ -157,19 +159,18 @@ class Plateau:
             i +=1
         if victoire == True:
             return victoire
-        i = 2
-        while i >= 0:
-            if self.cases[i,i].contenu != pion:
+        i = 0
+        j = 2
+        victoire = True
+        while i <=2:
+            if self.cases[i,j].contenu != pion:
                 victoire = False
-            i -=1
+            i += 1
+            j -= 1
         if victoire == True:
             return victoire
 
         return False
-
-
-
-
 
 
 
@@ -199,55 +200,74 @@ class Plateau:
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
 
         if pion == "X":
-            pion_ordi="O"
+            pion_joueur = "O"
         else:
-            pion_ordi="X"
-        self.completer_trios(pion_ordi)
-        self.completer_trios(pion)
-        valide = False
-        while not valide:
-            a = randrange(0,2)
-            b = randrange(0,2)
-            valide = self.position_valide(a,b)
-        return(a,b)
+            pion_joueur = "X"
+        for i in range(0,3):
+            for j in range(0,3):
+                if self.position_valide(i, j):
+                    self.cases[i,j] = Case(pion_joueur)
+                    if self.est_gagnant(pion_joueur):
+                        return (i,j)
+                    else: self.cases[i,j]=Case(" ")
+        for i in range(0,3):
+            for j in range(0,3):
+                if self.position_valide(i,j):
+                    self.cases[i,j] = Case(pion)
+                    if self.est_gagnant(pion):
+                        return (i,j)
+                    else: self.cases[i,j]=Case(" ")
+        x = 0
+        while x != 10:
+            a = randrange(0,3)
+            b = randrange(0,3)
+            if self.position_valide(a,b):
+                return (a,b)
 
 
 
-    def completer_trios(self,pion):
-        assert isinstance(pion, str), "Plateau: pion doit être une chaîne de caractères."
-        assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
+
+
+
+
+
+    """def completer_trios(self,à_tester,remplacer_par):
+        assert isinstance(à_tester, str), "Plateau: pion doit être une chaîne de caractères."
+        assert isinstance(remplacer_par, str), "Plateau: pion doit être une chaîne de caractères."
+        assert à_tester in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
+        assert remplacer_par in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
 
         for i in range(0,3):
-             if self.cases[i,0] and self.cases[i,1] == pion:
-                return (i,2)
-             if self.cases[i,1] and self.cases[i,2] == pion:
-                return (i,0)
-             if self.cases[i,0] and self.cases[i,2] == pion:
-                return (i,1)
-             if self.cases[0,i] and self.cases[1,i] == pion:
-                return (2,i)
-             if self.cases[1,i] and self.cases[2,i] == pion:
-                return (0,i)
-             if self.cases[0,i] and self.cases[2,i] == pion:
-                return (1,i)
-        if self.cases[1,1] == pion:
-            if self.cases[0,0] == pion:
-                return (2,2)
-            if self.cases[0,2] == pion:
-                return  (2,0)
-            if self.cases[2,2] == pion:
-                return (0,0)
-            if self.cases[2,0] == pion:
-                return  (0,2)
+             if self.cases[i,0] and self.cases[i,1] == Case(à_tester):
+                self.cases[i,2] = Case(remplacer_par)
+             if self.cases[i,1] and self.cases[i,2] == Case(à_tester):
+                self.cases[i,0] = Case(remplacer_par)
+             if self.cases[i,0] and self.cases[i,2] == Case(à_tester):
+                self.cases[i,1] = Case(remplacer_par)
+             if self.cases[0,i] and self.cases[1,i] == Case(à_tester):
+                self.cases[2,i] = Case(remplacer_par)
+             if self.cases[1,i] and self.cases[2,i] == Case(à_tester):
+                self.cases[0,i] = Case(remplacer_par)
+             if self.cases[0,i] and self.cases[2,i] == Case(à_tester):
+                self.cases[1,i] = Case(remplacer_par)
+        if self.cases[1,1] == Case(à_tester):
+            if self.cases[0,0] == Case(à_tester):
+                self.cases[2,2] = Case(remplacer_par)
+            if self.cases[0,2] == Case(à_tester):
+                self.cases[2,0] = Case(remplacer_par)
+            if self.cases[2,2] == Case(à_tester):
+                self.cases[0,0] = Case(remplacer_par)
+            if self.cases[2,0] == Case(à_tester):
+                self.cases[0,2] = Case(remplacer_par)
         else:
-            if (self.cases[0,0] and self.cases[2,2]) or (self.cases[0,2] and self.cases[2,0]) == pion:
-                return (1,1)
+            if (self.cases[0,0] and self.cases[2,2]) or (self.cases[0,2] and self.cases[2,0]) == Case(à_tester):
+                self.cases[1,1] = Case(remplacer_par)
         valide = False
         while not valide:
             a = randrange(0,2)
             b = randrange(0,2)
             valide = self.position_valide(a,b)
-        return(a,b)
+        return(a,b) """
 
 
 

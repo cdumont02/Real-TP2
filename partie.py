@@ -130,7 +130,7 @@ class Partie:
                     print("Le nombre entré est invalide")
             else:
                 print("La valeur entrée n'est pas un nombre.  Veuillez entrer un nombre")
-        return  valeur_entree
+        return valeur_entree
 
 
     def demander_forme_pion(self):
@@ -150,7 +150,7 @@ class Partie:
             if (choix == "X" or choix =="O"):
                 est_choix_valide = True
             else:
-                print("Choix invalide.  Veuilles choisir enrtre X ou O")
+                print("Choix invalide.  Veuillez choisir entre X ou O")
                 continue
         if choix == "X":
             self.pion_non_choisi = "O"
@@ -217,7 +217,10 @@ class Partie:
             Returns:
                 Rien
             """
-            self.plateau.choisir_prochaine_case(pion)
+            a,b = self.plateau.choisir_prochaine_case(pion)
+            self.plateau.selectionner_case(a,b,pion)
+            #la fonction choisir_prochaine _case doit retourner une paire d'entiers
+            #on doit donc avoir une nouvelle ligne de code ici pour assigner une case
 
 
         #SI le joueur a choisi 1 au menu principal les tours se déroulent de cette façon.
@@ -338,7 +341,7 @@ class Partie:
 
     def initialiser_partie(self, choix):
         """
-        Cette Méthode permet d'unitialise la partie.  Elle ajoute les joueurs dans la liste et assigne les pions selon le cjoix de l'utilisateur.
+        Cette Méthode permet d'unitialise la partie.  Elle ajoute les joueurs dans la liste et assigne les pions selon le choix de l'utilisateur.
         :param choix (int): choix du menu principal.  Dépend si le joueur a chasi de jouer cntre un ordinateur ou contre une autre personne.
         :return:
             Rien

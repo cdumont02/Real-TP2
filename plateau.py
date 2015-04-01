@@ -14,7 +14,11 @@ class Plateau:
     Attributes:
         cases           (dict)      : Dictionnaire des cases et de leur contenu
         chaîne_plateau  (str)       : Contient la chaîne affichant le plateau de jeu
-    À continuer!
+        victoire        (bool)      : Retourne si le jouer a gagné la partie, Vrai si oui, Faux si non
+        non_plein       (bool)      : Retourne si le plateau est plein
+        choisir_prochaine_case (int): Retourne deux coordonnées numériques correspondant au prochain mouvement de
+                                        l'ordinateur
+
 
 
     """
@@ -149,7 +153,7 @@ class Plateau:
             victoire = (self.cases[i,0].contenu == pion and self.cases[i,1].contenu == pion and self.cases[i,2].contenu == pion) or \
                        (self.cases[0,i].contenu == pion and self.cases[1,i].contenu == pion and self.cases[2,i].contenu == pion)
             if victoire == True:
-                return victoire
+                return victoire #comparaison pour les lignes ou les colonnes gagnantes
 
         victoire = True
         i=0
@@ -169,7 +173,7 @@ class Plateau:
             j -= 1
         if victoire == True:
             return victoire
-
+        #comparaison pour les deux diagonales possibles
         return False
 
 
@@ -200,16 +204,18 @@ class Plateau:
         assert pion in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
 
         if pion == "X":
-            pion_joueur = "O"
+            pion_ordi= "O"
         else:
-            pion_joueur = "X"
+            pion_ordi = "X"
         for i in range(0,3):
             for j in range(0,3):
                 if self.position_valide(i, j):
-                    self.cases[i,j] = Case(pion_joueur)
-                    if self.est_gagnant(pion_joueur):
+                    self.cases[i,j] = Case(pion_ordi)
+                    if self.est_gagnant(pion_ordi):
                         return (i,j)
                     else: self.cases[i,j]=Case(" ")
+                    #teste si l'ordinateur peut gagner au prochain tour
+                    #si oui, il place un pion pour gagner
         for i in range(0,3):
             for j in range(0,3):
                 if self.position_valide(i,j):
@@ -217,57 +223,15 @@ class Plateau:
                     if self.est_gagnant(pion):
                         return (i,j)
                     else: self.cases[i,j]=Case(" ")
+                    #teste si l'humain peut gagner au prochain tour
+                    #si oui, il place un pion pour le bloquer
         x = 0
         while x != 10:
             a = randrange(0,3)
             b = randrange(0,3)
             if self.position_valide(a,b):
                 return (a,b)
-
-
-
-
-
-
-
-
-    """def completer_trios(self,à_tester,remplacer_par):
-        assert isinstance(à_tester, str), "Plateau: pion doit être une chaîne de caractères."
-        assert isinstance(remplacer_par, str), "Plateau: pion doit être une chaîne de caractères."
-        assert à_tester in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
-        assert remplacer_par in ["O", "X"], "Plateau: pion doit être 'O' ou 'X'."
-
-        for i in range(0,3):
-             if self.cases[i,0] and self.cases[i,1] == Case(à_tester):
-                self.cases[i,2] = Case(remplacer_par)
-             if self.cases[i,1] and self.cases[i,2] == Case(à_tester):
-                self.cases[i,0] = Case(remplacer_par)
-             if self.cases[i,0] and self.cases[i,2] == Case(à_tester):
-                self.cases[i,1] = Case(remplacer_par)
-             if self.cases[0,i] and self.cases[1,i] == Case(à_tester):
-                self.cases[2,i] = Case(remplacer_par)
-             if self.cases[1,i] and self.cases[2,i] == Case(à_tester):
-                self.cases[0,i] = Case(remplacer_par)
-             if self.cases[0,i] and self.cases[2,i] == Case(à_tester):
-                self.cases[1,i] = Case(remplacer_par)
-        if self.cases[1,1] == Case(à_tester):
-            if self.cases[0,0] == Case(à_tester):
-                self.cases[2,2] = Case(remplacer_par)
-            if self.cases[0,2] == Case(à_tester):
-                self.cases[2,0] = Case(remplacer_par)
-            if self.cases[2,2] == Case(à_tester):
-                self.cases[0,0] = Case(remplacer_par)
-            if self.cases[2,0] == Case(à_tester):
-                self.cases[0,2] = Case(remplacer_par)
-        else:
-            if (self.cases[0,0] and self.cases[2,2]) or (self.cases[0,2] and self.cases[2,0]) == Case(à_tester):
-                self.cases[1,1] = Case(remplacer_par)
-        valide = False
-        while not valide:
-            a = randrange(0,2)
-            b = randrange(0,2)
-            valide = self.position_valide(a,b)
-        return(a,b) """
+        #si il n'y a pas de mouvement victorieux, on place un pion au hasard
 
 
 

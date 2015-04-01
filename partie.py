@@ -217,7 +217,12 @@ class Partie:
             Returns:
                 Rien
             """
-            a,b = self.plateau.choisir_prochaine_case(pion)
+            if pion == "O":
+                pion_joueur = "X"
+            else:
+                pion_joueur = "O"
+
+            a,b = self.plateau.choisir_prochaine_case(pion_joueur)
             self.plateau.selectionner_case(a,b,pion)
             #la fonction choisir_prochaine _case doit retourner une paire d'entiers
             #on doit donc avoir une nouvelle ligne de code ici pour assigner une case
